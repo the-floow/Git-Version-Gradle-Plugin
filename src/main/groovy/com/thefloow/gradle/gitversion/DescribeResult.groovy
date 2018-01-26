@@ -1,4 +1,4 @@
-package com.thefloow.gradle.gitversion;
+package com.thefloow.gradle.gitversion
 
 /*
  * This file is part of git-commit-id-plugin by Konrad 'ktoso' Malawski <konrad.malawski@java.pl>
@@ -17,70 +17,70 @@ package com.thefloow.gradle.gitversion;
  * along with git-commit-id-plugin.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import org.eclipse.jgit.lib.AbbreviatedObjectId;
-import org.eclipse.jgit.lib.ObjectId;
+import com.google.common.base.Joiner
+import com.google.common.base.Preconditions
+import org.eclipse.jgit.lib.AbbreviatedObjectId
+import org.eclipse.jgit.lib.ObjectId
 import org.eclipse.jgit.lib.ObjectReader
 
 class DescribeResult {
 
-    private Optional<String> tagName = Optional.empty();
-    private Optional<ObjectId> commitId = Optional.empty();
-    private Optional<AbbreviatedObjectId> abbreviatedObjectId = Optional.empty();
+    private Optional<String> tagName = Optional.empty()
+    private Optional<ObjectId> commitId = Optional.empty()
+    private Optional<AbbreviatedObjectId> abbreviatedObjectId = Optional.empty()
 
-    private int abbrev = 7;
-    private int commitsAwayFromTag;
+    private int abbrev = 7
+    private int commitsAwayFromTag
 
-    private boolean dirty;
-    private String dirtyMarker;
+    private boolean dirty
+    private String dirtyMarker
 
-    private boolean forceLongFormat;
+    private boolean forceLongFormat
 
-    private ObjectReader objectReader;
+    private ObjectReader objectReader
 
-    static final DescribeResult EMPTY = new DescribeResult("");
+    static final DescribeResult EMPTY = new DescribeResult("")
 
     DescribeResult(String tagName) {
-        this(tagName, false, Optional.empty());
+        this(tagName, false, Optional.empty())
     }
 
     DescribeResult(ObjectReader objectReader, ObjectId commitId) {
-        this.objectReader = objectReader;
+        this.objectReader = objectReader
 
-        this.commitId = Optional.of(commitId);
-        this.abbreviatedObjectId = createAbbreviatedCommitId(objectReader, commitId, this.abbrev);
+        this.commitId = Optional.of(commitId)
+        this.abbreviatedObjectId = createAbbreviatedCommitId(objectReader, commitId, this.abbrev)
     }
 
     DescribeResult(ObjectReader objectReader, String tagName, int commitsAwayFromTag, ObjectId commitId, boolean dirty, Optional<String> dirtyMarker, boolean forceLongFormat) {
-        this(objectReader, commitId, dirty, dirtyMarker);
-        this.tagName = Optional.of(tagName);
-        this.commitsAwayFromTag = commitsAwayFromTag;
-        this.forceLongFormat = forceLongFormat;
+        this(objectReader, commitId, dirty, dirtyMarker)
+        this.tagName = Optional.of(tagName)
+        this.commitsAwayFromTag = commitsAwayFromTag
+        this.forceLongFormat = forceLongFormat
     }
 
     DescribeResult(ObjectReader objectReader, ObjectId commitId, boolean dirty, Optional<String> dirtyMarker) {
-        this.objectReader = objectReader;
+        this.objectReader = objectReader
 
-        this.commitId = Optional.of(commitId);
-        this.abbreviatedObjectId = createAbbreviatedCommitId(objectReader, commitId, this.abbrev);
+        this.commitId = Optional.of(commitId)
+        this.abbreviatedObjectId = createAbbreviatedCommitId(objectReader, commitId, this.abbrev)
 
-        this.dirty = dirty;
-        this.dirtyMarker = dirtyMarker.orElse("");
+        this.dirty = dirty
+        this.dirtyMarker = dirtyMarker.orElse("")
     }
 
     DescribeResult(String tagName, boolean dirty, Optional<String> dirtyMarker) {
-        this.tagName = Optional.of(tagName);
-        this.dirty = dirty;
-        this.dirtyMarker = dirtyMarker.orElse("");
+        this.tagName = Optional.of(tagName)
+        this.dirty = dirty
+        this.dirtyMarker = dirtyMarker.orElse("")
     }
 
 
     DescribeResult withCommitIdAbbrev(int n) {
-        Preconditions.checkArgument(n >= 0, String.format("The --abbrev parameter must be >= 0, but it was: [%s]", n));
-        this.abbrev = n;
-        this.abbreviatedObjectId = createAbbreviatedCommitId(this.objectReader, this.commitId.get(), this.abbrev);
-        return this;
+        Preconditions.checkArgument(n >= 0, String.format("The --abbrev parameter must be >= 0, but it was: [%s]", n))
+        this.abbrev = n
+        this.abbreviatedObjectId = createAbbreviatedCommitId(this.objectReader, this.commitId.get(), this.abbrev)
+        return this
     }
 
     /**
@@ -108,24 +108,24 @@ class DescribeResult {
      * @return the String representation of this Describe command
      */
     @Override
-    public String toString() {
+    String toString() {
         List<String> parts = abbrevZeroHidesCommitsPartOfDescribe() ? new ArrayList<>(Collections.singletonList(tag()))
-                : new ArrayList<>(Arrays.asList(tag(), commitsAwayFromTag(), prefixedCommitId()));
+                : new ArrayList<>(Arrays.asList(tag(), commitsAwayFromTag(), prefixedCommitId()))
 
-        return Joiner.on("-").skipNulls().join(parts) + dirtyMarker(); // like in the describe spec the entire "-dirty" is configurable (incl. "-")
+        return Joiner.on("-").skipNulls().join(parts) + dirtyMarker() // like in the describe spec the entire "-dirty" is configurable (incl. "-")
     }
 
     private boolean abbrevZeroHidesCommitsPartOfDescribe() {
-        return abbrev == 0;
+        return abbrev == 0
     }
 
-    public String commitsAwayFromTag() {
+    String commitsAwayFromTag() {
         return forceLongFormat ? String.valueOf(commitsAwayFromTag)
-                : commitsAwayFromTag == 0 ? null : String.valueOf(commitsAwayFromTag);
+                : commitsAwayFromTag == 0 ? null : String.valueOf(commitsAwayFromTag)
     }
 
     public String dirtyMarker() {
-        return dirty ? dirtyMarker : "";
+        return dirty ? dirtyMarker : ""
     }
 
     /**
@@ -146,20 +146,20 @@ class DescribeResult {
      */
     public String prefixedCommitId() {
         if (abbreviatedObjectId.isPresent()) {
-            String name = abbreviatedObjectId.get().name();
-            return gPrefixedCommitId(name);
+            String name = abbreviatedObjectId.get().name()
+            return gPrefixedCommitId(name)
 
         }
         if (commitId.isPresent()) {
-            String name = commitId.get().name();
-            return gPrefixedCommitId(name);
+            String name = commitId.get().name()
+            return gPrefixedCommitId(name)
 
         }
-        return null;
+        return null
     }
 
     private String gPrefixedCommitId(String name) {
-        return tagName.isPresent() ? "g" + name : name;
+        return tagName.isPresent() ? "g" + name : name
     }
 
     /**
@@ -174,18 +174,18 @@ class DescribeResult {
     private static Optional<AbbreviatedObjectId> createAbbreviatedCommitId(ObjectReader objectReader, ObjectId commitId, int requestedLength) {
         if (requestedLength < 2) {
             // 0 means we don't want to print commit id's at all
-            return Optional.empty();
+            return Optional.empty()
         }
 
         try {
-            AbbreviatedObjectId abbreviatedObjectId = objectReader.abbreviate(commitId, requestedLength);
-            return Optional.of(abbreviatedObjectId);
+            AbbreviatedObjectId abbreviatedObjectId = objectReader.abbreviate(commitId, requestedLength)
+            return Optional.of(abbreviatedObjectId)
         } catch (IOException e) {
-            return Optional.empty();
+            return Optional.empty()
         }
     }
 
     public String tag() {
-        return tagName.orElse(null);
+        return tagName.orElse(null)
     }
 }

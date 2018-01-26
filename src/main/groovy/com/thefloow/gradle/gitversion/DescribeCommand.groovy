@@ -28,28 +28,28 @@ import org.slf4j.LoggerFactory
 
 class DescribeCommand extends GitCommand<DescribeResult> {
 
-    private Logger L = LoggerFactory.getLogger(DescribeCommand.class);
-    private JGitCommon jGitCommon;
-    private String evaluateOnCommit;
+    private Logger L = LoggerFactory.getLogger(DescribeCommand.class)
+    private JGitCommon jGitCommon
+    private String evaluateOnCommit
 
-    private Optional<String> matchOption = Optional.empty();
+    private Optional<String> matchOption = Optional.empty()
 
     /**
      * How many chars of the commit hash should be displayed? 7 is the default used by git.
      */
-    private int abbrev = 7;
+    private int abbrev = 7
 
-    private boolean alwaysFlag = false;
+    private boolean alwaysFlag = false
 
     /**
      * Corresponds to <pre>--long</pre>. Always use the <pre>TAG-N-HASH</pre> format, even when ON a tag.
      */
-    private boolean forceLongFormat = false;
+    private boolean forceLongFormat = false
 
     /**
      * The string marker (such as "DEV") to be suffixed to the describe result when the working directory is dirty
      */
-    private Optional<String> dirtyOption = Optional.of("-dirty");
+    private Optional<String> dirtyOption = Optional.of("-dirty")
 
     /**
      * Creates a new describe command which interacts with a single repository
@@ -57,8 +57,8 @@ class DescribeCommand extends GitCommand<DescribeResult> {
      * @param repo the {@link Repository} this command should interact with
      */
 
-    public static DescribeCommand on(String evaluateOnCommit, Repository repo) {
-        return new DescribeCommand(evaluateOnCommit, repo);
+    static DescribeCommand on(String evaluateOnCommit, Repository repo) {
+        return new DescribeCommand(evaluateOnCommit, repo)
     }
 
     /**
@@ -67,61 +67,61 @@ class DescribeCommand extends GitCommand<DescribeResult> {
      * @param repo the {@link org.eclipse.jgit.lib.Repository} this command should interact with
      */
     private DescribeCommand(String evaluateOnCommit, Repository repo) {
-        super(repo);
-        this.evaluateOnCommit = evaluateOnCommit;
-        this.jGitCommon = new JGitCommon();
+        super(repo)
+        this.evaluateOnCommit = evaluateOnCommit
+        this.jGitCommon = new JGitCommon()
     }
 
 
     @Override
-    public DescribeResult call() throws GitAPIException {
+    DescribeResult call() throws GitAPIException {
         // needed for abbrev id's calculation
-        ObjectReader objectReader = repo.newObjectReader();
+        ObjectReader objectReader = repo.newObjectReader()
 
-        String matchPattern = createMatchPattern();
+        String matchPattern = createMatchPattern()
 
-        Map<ObjectId, List<String>> tagObjectIdToName = jGitCommon.findTagObjectIds(repo, true, matchPattern);
+        Map<ObjectId, List<String>> tagObjectIdToName = jGitCommon.findTagObjectIds(repo, true, matchPattern)
 
         // get current commit
-        RevCommit evalCommit = findEvalCommitObjectId(evaluateOnCommit, repo);
-        ObjectId evalCommitId = evalCommit.getId();
+        RevCommit evalCommit = findEvalCommitObjectId(evaluateOnCommit, repo)
+        ObjectId evalCommitId = evalCommit.getId()
 
         // check if dirty
-        boolean dirty = JGitCommon.isRepositoryInDirtyState(repo);
+        boolean dirty = JGitCommon.isRepositoryInDirtyState(repo)
 
         if (hasTags(evalCommit, tagObjectIdToName) && !forceLongFormat) {
-            String tagName = tagObjectIdToName.get(evalCommit).iterator().next();
-            L.info("The commit we're on is a Tag ([{}]) and forceLongFormat == false, returning.", tagName);
+            String tagName = tagObjectIdToName.get(evalCommit).iterator().next()
+            L.info("The commit we're on is a Tag ([{}]) and forceLongFormat == false, returning.", tagName)
 
-            return new DescribeResult(tagName, dirty, dirtyOption);
+            return new DescribeResult(tagName, dirty, dirtyOption)
         }
 
         // get commits, up until the nearest tag
-        List<RevCommit> commits;
+        List<RevCommit> commits
         try {
-            commits = jGitCommon.findCommitsUntilSomeTag(repo, evalCommit, tagObjectIdToName);
+            commits = jGitCommon.findCommitsUntilSomeTag(repo, evalCommit, tagObjectIdToName)
         } catch (Exception e) {
             if (alwaysFlag) {
                 // Show uniquely abbreviated commit object as fallback
-                commits = Collections.emptyList();
+                commits = Collections.emptyList()
             } else {
-                throw e;
+                throw e
             }
         }
 
         // if there is no tags or any tag is not on that branch then return generic describe
         if (foundZeroTags(tagObjectIdToName) || commits.isEmpty()) {
-            return new DescribeResult(objectReader, evalCommitId, dirty, dirtyOption).withCommitIdAbbrev(abbrev);
+            return new DescribeResult(objectReader, evalCommitId, dirty, dirtyOption).withCommitIdAbbrev(abbrev)
         }
 
         // check how far away from a tag we are
 
-        int distance = jGitCommon.distanceBetween(repo, evalCommit, commits.get(0));
-        String tagName = tagObjectIdToName.get(commits.get(0)).iterator().next();
-        Pair<Integer, String> howFarFromWhichTag = new Pair<>(distance, tagName);
+        int distance = jGitCommon.distanceBetween(repo, evalCommit, commits.get(0))
+        String tagName = tagObjectIdToName.get(commits.get(0)).iterator().next()
+        Pair<Integer, String> howFarFromWhichTag = new Pair<>(distance, tagName)
 
         // if it's null, no tag's were found etc, so let's return just the commit-id
-        return createDescribeResult(objectReader, evalCommitId, dirty, howFarFromWhichTag);
+        return createDescribeResult(objectReader, evalCommitId, dirty, howFarFromWhichTag)
     }
 
     /**
@@ -134,39 +134,39 @@ class DescribeCommand extends GitCommand<DescribeResult> {
     private DescribeResult createDescribeResult(ObjectReader objectReader, ObjectId headCommitId, boolean dirty, Pair<Integer, String> howFarFromWhichTag) {
         if (howFarFromWhichTag == null) {
             return new DescribeResult(objectReader, headCommitId, dirty, dirtyOption)
-                    .withCommitIdAbbrev(abbrev);
+                    .withCommitIdAbbrev(abbrev)
         }
         if (howFarFromWhichTag.getFirst() > 0 || forceLongFormat) {
             return new DescribeResult(objectReader, howFarFromWhichTag.getSecond(), howFarFromWhichTag.getFirst(), headCommitId, dirty, dirtyOption, forceLongFormat)
-                    .withCommitIdAbbrev(abbrev); // we're a bit away from a tag
+                    .withCommitIdAbbrev(abbrev) // we're a bit away from a tag
         }
 
         if (howFarFromWhichTag.getFirst() == 0) {
             return new DescribeResult(howFarFromWhichTag.getSecond())
-                    .withCommitIdAbbrev(abbrev); // we're ON a tag
+                    .withCommitIdAbbrev(abbrev) // we're ON a tag
         }
 
         if (alwaysFlag) {
             return new DescribeResult(objectReader, headCommitId)
-                    .withCommitIdAbbrev(abbrev); // we have no tags! display the commit
+                    .withCommitIdAbbrev(abbrev) // we have no tags! display the commit
         }
 
-        return DescribeResult.EMPTY;
+        return DescribeResult.EMPTY
     }
 
     private static boolean foundZeroTags(Map<ObjectId, List<String>> tags) {
-        return tags.isEmpty();
+        return tags.isEmpty()
     }
 
     private static boolean hasTags(ObjectId headCommit, Map<ObjectId, List<String>> tagObjectIdToName) {
-        return tagObjectIdToName.containsKey(headCommit);
+        return tagObjectIdToName.containsKey(headCommit)
     }
 
     private RevCommit findEvalCommitObjectId(String evaluateOnCommit, Repository repo) throws RuntimeException {
-        return jGitCommon.findEvalCommitObjectId(evaluateOnCommit, repo);
+        return jGitCommon.findEvalCommitObjectId(evaluateOnCommit, repo)
     }
 
     private String createMatchPattern() {
-        return !matchOption.isPresent() ? ".*" : jGitCommon.createMatchPattern(matchOption.get());
+        return !matchOption.isPresent() ? ".*" : jGitCommon.createMatchPattern(matchOption.get())
     }
 }
