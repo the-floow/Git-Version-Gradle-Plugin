@@ -1,2 +1,2 @@
-rootProject.name = 'gradle-version-plugin'
+rootProject.name = 'git-version-gradle-plugin'
 
