@@ -29,22 +29,22 @@ import static java.time.ZoneOffset.*;
 @Canonical
 class DatedRevTag {
 
-    AnyObjectId id;
-    String tagName;
-    LocalDateTime date;
+    AnyObjectId id
+    String tagName
+    LocalDateTime date
 
     DatedRevTag(RevTag tag) {
         this(tag.getId(), tag.getTagName(),
-                (tag.getTaggerIdent() != null) ? LocalDateTime.ofInstant(tag.getTaggerIdent().getWhen().toInstant(), UTC) : LocalDateTime.now(UTC).minusYears(1900));
+                (tag.getTaggerIdent() != null) ? LocalDateTime.ofInstant(tag.getTaggerIdent().getWhen().toInstant(), UTC) : LocalDateTime.now(UTC).minusYears(1900))
     }
 
     DatedRevTag(AnyObjectId id, String tagName) {
-        this(id, tagName, LocalDateTime.now().minusYears(2000));
+        this(id, tagName, LocalDateTime.now().minusYears(2000))
     }
 
     private DatedRevTag(AnyObjectId id, String tagName, LocalDateTime date) {
-        this.id = id;
-        this.tagName = tagName;
-        this.date = date;
+        this.id = id
+        this.tagName = tagName
+        this.date = date
     }
 }

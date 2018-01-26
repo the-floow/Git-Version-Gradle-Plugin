@@ -19,6 +19,6 @@ class GeneratePropertyFileTask extends DefaultTask {
 
         logger.quiet "Writing git version for git repo: '$gitDir', to: '$output' (project version: '$version')"
 
-        new VersionFileGenerator().execute(gitDir, output, version);
+        new VersionFileGenerator().execute(gitDir, output, version)
     }
 }
