@@ -2,39 +2,14 @@
 buildscript {
   apply from: "${System.properties.getAt('user.home')}/.gradle/repos.gradle", to: buildscript
   dependencies {
-      classpath 'uk.co.jamesridgway:gradle-gitflow-plugin:1.0.1'
+      classpath 'uk.co.jamesridgway:gradle-gitflow-plugin:1.1.0'
   }
 }
 
 group 'com.thefloow'
 
+apply from: "${System.properties.getAt('user.home')}/.gradle/publish.gradle"
 apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'uk.co.jamesridgway.gradle.gitflow.plugin'
-apply plugin: 'maven-publish'
-
-def isRelease = version instanceof uk.co.jamesridgway.gradle.gitflow.plugin.version.ReleaseVersion
-def repo = repositories.find{ it.name == (isRelease ? "internal" : "snapshots") }
-def versionString = version.toString().replace("/", "_")
-
-publishing {
-    repositories {
-        maven {
-            name repo.name
-            url  repo.url
-            credentials {
-                username repo.credentials.username
-                password repo.credentials.password
-            }
-        }
-    }
-    publications {
-        plugin(MavenPublication) {
-            version versionString
-            from components.java
-        }
-    }
-}
 
 dependencies {
     compile gradleApi()
