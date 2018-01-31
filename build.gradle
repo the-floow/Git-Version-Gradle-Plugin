@@ -2,7 +2,7 @@
 buildscript {
   apply from: "${System.properties.getAt('user.home')}/.gradle/repos.gradle", to: buildscript
   dependencies {
-      classpath 'uk.co.jamesridgway:gradle-gitflow-plugin:1.1.0'
+      classpath 'uk.co.jamesridgway:gradle-gitflow-plugin:1.2.0'
   }
 }
 
