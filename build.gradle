@@ -35,7 +35,7 @@ buildscript {
 
 bintray.pkg {
     repo = 'gradle-plugins'
-    licenses = ['LGPL3']
+    licenses = ['LGPL-3.0']
     labels = ['gradle', 'plugin', 'git']
     websiteUrl = "https://github.com/the-floow/Git-Version-Gradle-Plugin"
     issueTrackerUrl = "https://github.com/the-floow/Git-Version-Gradle-Plugin/issues"
