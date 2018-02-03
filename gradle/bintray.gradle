@@ -13,7 +13,7 @@ bintray {
 
     pkg {
         name = "${group}:${project.name}"
-        userorg = "the-floow"
+        userOrg = "the-floow"
         desc = "$description"
 
         publicDownloadNumbers = true
