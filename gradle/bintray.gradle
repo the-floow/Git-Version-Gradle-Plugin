@@ -1,0 +1,28 @@
+bintray {
+    if (project.hasProperty('bintrayUser')) {
+        user = project.getProperties().get("bintrayUser")
+    }
+    if (project.hasProperty('bintrayKey')) {
+        key = project.getProperties().get("bintrayKey")
+    }
+
+    publications = ['main']
+
+    dryRun = false
+    publish = true
+
+    pkg {
+        name = "${group}:${project.name}"
+        desc = "$description"
+
+        publicDownloadNumbers = true
+
+        version {
+            vcsTag = "${project.version}"
+        }
+    }
+}
+
+if (version.isRelease()) {
+    publish.dependsOn bintrayUpload
+}

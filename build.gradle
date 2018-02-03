@@ -1,15 +1,19 @@
+group 'com.thefloow'
+description "Gradle plugin which includes build-time git repository information into an POJO / *.properties"
 
-buildscript {
-  apply from: "${System.properties.getAt('user.home')}/.gradle/repos.gradle", to: buildscript
-  dependencies {
-      classpath 'uk.co.jamesridgway:gradle-gitflow-plugin:1.2.0'
-  }
+repositories {
+    jcenter()
+    mavenLocal()
 }
 
-group 'com.thefloow'
-
-apply from: "${System.properties.getAt('user.home')}/.gradle/publish.gradle"
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'uk.co.jamesridgway.gradle.gitflow.plugin'
+
+apply from: 'gradle/maven.gradle'
+apply from: 'gradle/bintray.gradle'
 
 dependencies {
     compile gradleApi()
@@ -17,4 +21,23 @@ dependencies {
     compile "org.eclipse.jgit:org.eclipse.jgit:4.5.4.201711221230-r"
     compile "com.google.guava:guava:19.0"
     compile "org.slf4j:slf4j-api:1.7.25"
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'uk.co.jamesridgway:gradle-gitflow-plugin:1.2.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+    }
+}
+
+bintray.pkg {
+    repo = 'gradle-plugins'
+    licenses = ['LGPL3']
+    labels = ['gradle', 'plugin', 'git']
+    websiteUrl = "https://github.com/the-floow/Git-Version-Gradle-Plugin"
+    issueTrackerUrl = "https://github.com/the-floow/Git-Version-Gradle-Plugin/issues"
+    vcsUrl = "${websiteUrl}.git"
 }
