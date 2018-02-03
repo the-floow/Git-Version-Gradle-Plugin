@@ -1,6 +1,6 @@
 # Git Version Gradle Plugin
 [![Build Status](https://travis-ci.org/the-floow/Git-Version-Gradle-Plugin.svg?branch=master)](https://travis-ci.org/the-floow/Git-Version-Gradle-Plugin)
-[![Download](https://api.bintray.com/packages/the-floow/gradle-plugins/git-version-gradle-plugin/images/download.svg) ](https://bintray.com/the-floow/gradle-plugins/git-version-gradle-plugin/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/the-floow/gradle-plugins/com.thefloow%3Agit-version-gradle-plugin/images/download.svg) ](https://bintray.com/the-floow/gradle-plugins/com.thefloow%3Agit-version-gradle-plugin/_latestVersion)
 
 This gradle plugin provides the ability to generate a git properties file in 
 the same format as the [maven-git-commit-id-plugin](https://github.com/ktoso/maven-git-commit-id-plugin).
