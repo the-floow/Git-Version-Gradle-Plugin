@@ -3,5 +3,8 @@ jdk:
 - oraclejdk8
 before_install:
 - chmod +x gradlew
-script: ./gradlew check
-after_success: ./gradlew publish
+script: "./gradlew check"
+after_success: "./gradlew publish"
+env:
+  global:
+    secure: Gln5TEydAOO41EsV7rzORvOuNwctjCWKYXBzpe1jrQtlNqd+N27PRmqr9aAhBU+3m5NlsM0mH7BQuyG+z4Mn6BZYO6q3ynY5vHA3MXy4BxcZ9PG9ZNlKG1obHqqZP7gcaaMif2Pu8NVrn8hlDlI12FpycSa+lj+mZqpPLRnIFkMxMtabNjI3cnENeqGcxzhyXuQKiVafhYSEenyyHE+soYQgnSUywvSNFKirS8F7IqDxPrD5Fj1FiTLnu+ggRz4Gd0/aykckwW1dnD1kxny40VzZWX3UEXSP4AcUkk3uk1Z4JFFOEMRpgTxaVrz2gows8azHr1eK/N7N5wa04Zu71xluEPbQVCyoIS6S+ZVkUocDPns2NDirxV08RNP9SodA2wSAcID8jBDqwbSc1+Das8CpkGU++9koQ1rNzE+9+vvIkDH2YDGPFDP2mghbDbMwQU4AZS1w04FNLYMTAihzezvVt8OkYWyvKj7TD0O18bZ17n34F83AWsTHxcpXyXfXnyoVj2eY7izLI4hEPhEECuZYjefWiGYZhUV8q4TlF/MiefhXz5mIas6AGcSlF2r6gJBqnzR+9PTA8mViSL0B8ETKLBWTmMVapmWx+kjJ1wW62RSmSkZb+VvfNjV0dT45ZGhUENVmknQzdUgibiefJCD9/DNSqtjD9ra8ZIgCQQQ=
