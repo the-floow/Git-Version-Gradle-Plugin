@@ -35,7 +35,7 @@ Add the plugin as a build script dependency:
 ```groovy
 buildscript {
   dependencies {
-    classpath 'com.thefloow:git-version-gradle-plugin:1.0.5'
+    classpath 'com.thefloow:git-version-gradle-plugin:1.0.6'
   }
 }
 ```
@@ -49,4 +49,4 @@ gitVersionPlugin {
 ```
 
 ## Notes
-This requires the version to be set before this plugin runs. 
+This requires the version to be set before this plugin runs.
