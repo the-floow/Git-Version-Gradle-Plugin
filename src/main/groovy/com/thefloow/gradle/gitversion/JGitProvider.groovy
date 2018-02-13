@@ -106,7 +106,7 @@ class JGitProvider {
         try {
             return InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
+            return "Unknown";
         }
     }
 
