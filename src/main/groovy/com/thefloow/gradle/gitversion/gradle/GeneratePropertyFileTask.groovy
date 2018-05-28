@@ -13,12 +13,16 @@ class GeneratePropertyFileTask extends DefaultTask {
     @TaskAction
     void generateFile() {
 
+        File genDir = new File(project.buildDir, "generated-version-info")
+        File outputFile = new File(genDir, destinationFile().get().path)
+
         File gitDir = project.file(gitDir)
-        File output = project.file(destinationFile)
         String version = project.version
 
-        logger.quiet "Writing git version for git repo: '$gitDir', to: '$output' (project version: '$version')"
+        project.sourceSets.main.output.dir(genDir, builtBy: name)
 
-        new VersionFileGenerator().execute(gitDir, output, version)
+        logger.quiet "Writing git version for git repo: '$gitDir', to: '$outputFile' (project version: '$version')"
+
+        new VersionFileGenerator().execute(gitDir, outputFile, version)
     }
 }

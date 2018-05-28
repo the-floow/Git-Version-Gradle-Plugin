@@ -35,15 +35,15 @@ Add the plugin as a build script dependency:
 ```groovy
 buildscript {
   dependencies {
-    classpath 'com.thefloow:git-version-gradle-plugin:1.0.6'
+    classpath 'com.thefloow:git-version-gradle-plugin:1.0.7'
   }
 }
 ```
 
-Configure the plugin to specify a destination file path and the git directory:
+Optionally override plugin configuration to override destination file path and the git directory:
 ```groovy
 gitVersionPlugin {
-  destinationFile = file("src/main/resources/META-INF/version/git-${group}_${project.name}.properties")
+  destinationFile = file("META-INF/version/git-${project.group}_${project.name}.properties")
   gitDir = file("${rootProject.projectDir}/.git")
 }
 ```
