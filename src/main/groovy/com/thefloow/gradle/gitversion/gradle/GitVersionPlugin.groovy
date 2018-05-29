@@ -2,6 +2,7 @@ package com.thefloow.gradle.gitversion.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.JavaPlugin
 
 class GitVersionPlugin implements Plugin<Project> {
 
@@ -9,10 +10,15 @@ class GitVersionPlugin implements Plugin<Project> {
 
         def extension = project.extensions.create('gitVersionPlugin', GitVersionPluginExtension, project)
 
-        project.tasks.create('generatePropertiesFile', GeneratePropertyFileTask) {
+        def task = project.tasks.create('generatePropertiesFile', GeneratePropertyFileTask) {
             destinationFile = { extension.destinationFile }
             gitDir = { extension.gitDir }
         }
+
+        project.getPlugins().withType(JavaPlugin) {
+                project.tasks.processResources.dependsOn task
+        }
+
     }
 }
 
